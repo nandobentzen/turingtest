@@ -10,7 +10,7 @@ export default function Chat() {
   const [gameOver, setGameOver] = useState(false);
   const [room, setRoom] = useState(null);
   const [searching, setSearching] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(null); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [partnerType, setPartnerType] = useState(null);
   const [showGuessOptions, setShowGuessOptions] = useState(false);
   const [guessResult, setGuessResult] = useState(null);
@@ -25,7 +25,7 @@ export default function Chat() {
 
     socketRef.current.on("connect", () => {
       setUserId(socketRef.current.id);
-      console.log("Connected:", socketRef.current.id);
+      console.log("Connected userId:", socketRef.current.id); // Now it's explicitly used
     });
 
     socketRef.current.on("matched", ({ room, partnerType }) => {
@@ -58,7 +58,6 @@ export default function Chat() {
     };
   }, []);
 
-  // Scroll to the bottom using a dummy element.
   useEffect(() => {
     if (dummyRef.current) {
       dummyRef.current.scrollIntoView({ behavior: "smooth" });
@@ -103,7 +102,6 @@ export default function Chat() {
     socketRef.current.emit("startChat");
   };
 
-  // Spinner styles.
   const spinnerStyle = {
     margin: "20px auto",
     width: "50px",
@@ -207,7 +205,6 @@ export default function Chat() {
                 <strong>{msg.user}:</strong> {msg.text}
               </div>
             ))}
-            {/* Dummy element to scroll into view */}
             <div ref={dummyRef}></div>
           </div>
 
@@ -230,73 +227,118 @@ export default function Chat() {
                 }}
                 placeholder="Type your message..."
               />
-              <button
-                onClick={sendMessage}
-                style={{
-                  padding: "10px",
-                  borderRadius: "5px",
-                  backgroundColor: "#25d366",
-                  color: "white",
-                  border: "none",
-                }}
-              >
+              <button onClick={sendMessage} style={{ padding: "10px", borderRadius: "5px", backgroundColor: "#25d366", color: "white", border: "none" }}>
                 Send
               </button>
             </div>
-          ) : showGuessOptions ? (
+) : showGuessOptions ? (
+
             <div style={{ textAlign: "center", marginTop: "10px" }}>
+
               <p style={{ marginBottom: "10px" }}>
+
                 Who do you think your chat partner was?
+
               </p>
+
               {!guessResult ? (
+
                 <>
+
                   <button
+
                     onClick={() => handleGuess("AI")}
+
                     style={{
+
                       padding: "10px",
+
                       margin: "5px",
+
                       borderRadius: "5px",
+
                       backgroundColor: "#34b7f1",
+
                       color: "white",
+
                       border: "none",
+
                     }}
+
                   >
+
                     AI
+
                   </button>
+
                   <button
+
                     onClick={() => handleGuess("Human")}
+
                     style={{
+
                       padding: "10px",
+
                       margin: "5px",
+
                       borderRadius: "5px",
+
                       backgroundColor: "#ff6f61",
+
                       color: "white",
+
                       border: "none",
+
                     }}
+
                   >
+
                     Human
+
                   </button>
+
                 </>
+
               ) : (
+
                 <>
+
                   <p style={{ marginTop: "10px", fontWeight: "bold" }}>
+
                     {guessResult}
+
                   </p>
+
                   <button
+
                     onClick={restartChat}
+
                     style={{
+
                       marginTop: "10px",
+
                       padding: "10px",
+
                       borderRadius: "5px",
+
                       backgroundColor: "#128c7e",
+
                       color: "white",
+
                       border: "none",
+
                     }}
+
                   >
+
                     Start a New Chat
+
                   </button>
+
                 </>
+
               )}
+
             </div>
           ) : null}
         </>
