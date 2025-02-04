@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import "../public/styles.css"; // Import your CSS file
+import "../styles/styles.css"; 
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
