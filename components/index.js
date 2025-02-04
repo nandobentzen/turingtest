@@ -1,6 +1,8 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
+import styles from "./Chat.module.css"; // Import the CSS module
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
@@ -76,33 +78,71 @@ export default function Chat() {
     }
   };
 
+  const handleGuess = (guess) => {
+    if (guessResult) return;
+    if (
+      (guess === "AI" && partnerType === "ai") ||
+      (guess === "Human" && partnerType === "human")
+    ) {
+      setGuessResult("Correct! You got it right.");
+      setScore((prev) => prev + 1);
+    } else {
+      setGuessResult("Wrong! Better luck next time.");
+      setScore(0);
+    }
+  };
+
+  const restartChat = () => {
+    setSearching(true);
+    setGameOver(false);
+    setRoom(null);
+    setPartnerType(null);
+    setShowGuessOptions(false);
+    setGuessResult(null);
+    setMessages([]);
+    socketRef.current.emit("startChat");
+  };
+
   return (
-    <div className="chat-container">
+    <div className={styles.chatContainer}>
       {!hasStarted ? (
-        <div className="start-screen">
+        <div className={styles.startScreen}>
           <h1>CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?</h1>
-          <p>Chat for 60 seconds and then guess if your partner is a real person or a cleverly disguised AI.</p>
-          <button onClick={startChat}>START CHATTING</button>
+          <p>
+            Chat for 60 seconds and then guess if your partner is a real person
+            or a cleverly disguised AI.
+          </p>
+          <button className={styles.startButton} onClick={startChat}>
+            START CHATTING
+          </button>
         </div>
       ) : searching ? (
-        <div className="spinner"></div>
+        <div className={styles.searchingScreen}>
+          <div className={styles.spinner}></div>
+          <p>Searching for a match...</p>
+        </div>
       ) : (
         <>
-          <div className="score">Score: {score}</div>
+          <div className={styles.score}>Score: {score}</div>
 
-          <div className="chat-box" ref={chatBoxRef}>
+          <div className={styles.chatBox} ref={chatBoxRef}>
             {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.user === "You" ? "you" : "guest"}`}>
+              <div
+                key={index}
+                className={`${styles.message} ${
+                  msg.user === "You" ? styles.you : styles.guest
+                }`}
+              >
                 <strong>{msg.user}:</strong> {msg.text}
               </div>
             ))}
             <div ref={dummyRef}></div>
           </div>
 
-          <p className="timer">Time Left: {timer}s</p>
+          <p className={styles.timer}>Time Left: {timer}s</p>
 
           {!gameOver ? (
-            <div className="input-container">
+            <div className={styles.inputContainer}>
               <input
                 type="text"
                 value={input}
@@ -112,22 +152,34 @@ export default function Chat() {
               />
               <button onClick={sendMessage}>Send</button>
             </div>
-          ) : showGuessOptions ? (
-            <div className="guess-container">
+          ) : (
+            <div className={styles.guessContainer}>
               <p>Who do you think your chat partner was?</p>
               {!guessResult ? (
                 <>
-                  <button onClick={() => handleGuess("AI")}>AI</button>
-                  <button onClick={() => handleGuess("Human")}>Human</button>
+                  <button
+                    className={styles.aiButton}
+                    onClick={() => handleGuess("AI")}
+                  >
+                    AI
+                  </button>
+                  <button
+                    className={styles.humanButton}
+                    onClick={() => handleGuess("Human")}
+                  >
+                    Human
+                  </button>
                 </>
               ) : (
                 <>
                   <p>{guessResult}</p>
-                  <button onClick={restartChat}>Start a New Chat</button>
+                  <button className={styles.newChatButton} onClick={restartChat}>
+                    Start a New Chat
+                  </button>
                 </>
               )}
             </div>
-          ) : null}
+          )}
         </>
       )}
     </div>
