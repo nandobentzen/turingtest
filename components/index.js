@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import styles from "./Chat.module.css"; // Import the CSS module
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
@@ -22,6 +21,7 @@ export default function Chat() {
   const socketRef = useRef(null);
 
   useEffect(() => {
+    // Connect to your Heroku server URL.
     socketRef.current = io("https://turinggame-026947442f58.herokuapp.com/");
 
     socketRef.current.on("connect", () => {
@@ -103,35 +103,105 @@ export default function Chat() {
     socketRef.current.emit("startChat");
   };
 
+  const spinnerStyle = {
+    margin: "20px auto",
+    width: "50px",
+    height: "50px",
+    border: "5px solid #ccc",
+    borderTop: "5px solid #128c7e",
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
+  };
+
   return (
-    <div className={styles.chatContainer}>
+    <div
+      className="chat-container"
+      style={{
+        maxWidth: "400px",
+        margin: "auto",
+        backgroundColor: "#e5ddd5",
+        borderRadius: "10px",
+        padding: "10px",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+
       {!hasStarted ? (
-        <div className={styles.startScreen}>
-          <h1>CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?</h1>
-          <p>
-            Chat for 60 seconds and then guess if your partner is a real person
-            or a cleverly disguised AI.
+        <div style={{ textAlign: "center", padding: "50px" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: "bold", marginBottom: "20px" }}>
+            CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?
+          </h1>
+          <p style={{ marginBottom: "20px" }}>
+            Chat for 60 seconds and then guess if your partner is a real person or a cleverly disguised AI.
           </p>
-          <button className={styles.startButton} onClick={startChat}>
+          <button
+            onClick={startChat}
+            style={{
+              padding: "15px 30px",
+              fontSize: "16px",
+              borderRadius: "5px",
+              backgroundColor: "#128c7e",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
             START CHATTING
           </button>
         </div>
       ) : searching ? (
-        <div className={styles.searchingScreen}>
-          <div className={styles.spinner}></div>
+        <div style={{ textAlign: "center", fontSize: "18px", padding: "20px" }}>
+          <div style={spinnerStyle}></div>
           <p>Searching for a match...</p>
         </div>
       ) : (
         <>
-          <div className={styles.score}>Score: {score}</div>
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "10px",
+              fontSize: "18px",
+              fontWeight: "bold",
+            }}
+          >
+            Score: {score}
+          </div>
 
-          <div className={styles.chatBox} ref={chatBoxRef}>
+          <div
+            className="chat-box"
+            ref={chatBoxRef}
+            style={{
+              height: "400px",
+              overflowY: "auto",
+              border: "1px solid #ccc",
+              padding: "10px",
+              backgroundColor: "#fff",
+              borderRadius: "5px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+            }}
+          >
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`${styles.message} ${
-                  msg.user === "You" ? styles.you : styles.guest
-                }`}
+                style={{
+                  maxWidth: "70%",
+                  alignSelf: msg.user === "You" ? "flex-end" : "flex-start",
+                  backgroundColor: msg.user === "You" ? "#dcf8c6" : "#fff",
+                  padding: "10px",
+                  borderRadius: "15px",
+                  margin: "5px 0",
+                  boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.1)",
+                  wordWrap: "break-word",
+                  textAlign: "left",
+                }}
               >
                 <strong>{msg.user}:</strong> {msg.text}
               </div>
@@ -139,47 +209,94 @@ export default function Chat() {
             <div ref={dummyRef}></div>
           </div>
 
-          <p className={styles.timer}>Time Left: {timer}s</p>
+          <p style={{ textAlign: "center", color: "#128c7e", marginTop: "10px" }}>
+            Time Left: {timer}s
+          </p>
 
           {!gameOver ? (
-            <div className={styles.inputContainer}>
+            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                style={{
+                  flexGrow: 1,
+                  padding: "10px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                }}
                 placeholder="Type your message..."
               />
-              <button onClick={sendMessage}>Send</button>
+              <button
+                onClick={sendMessage}
+                style={{
+                  padding: "10px",
+                  borderRadius: "5px",
+                  backgroundColor: "#25d366",
+                  color: "white",
+                  border: "none",
+                }}
+              >
+                Send
+              </button>
             </div>
-          ) : (
-            <div className={styles.guessContainer}>
-              <p>Who do you think your chat partner was?</p>
+          ) : showGuessOptions ? (
+            <div style={{ textAlign: "center", marginTop: "10px" }}>
+              <p style={{ marginBottom: "10px" }}>
+                Who do you think your chat partner was?
+              </p>
               {!guessResult ? (
                 <>
                   <button
-                    className={styles.aiButton}
                     onClick={() => handleGuess("AI")}
+                    style={{
+                      padding: "10px",
+                      margin: "5px",
+                      borderRadius: "5px",
+                      backgroundColor: "#34b7f1",
+                      color: "white",
+                      border: "none",
+                    }}
                   >
                     AI
                   </button>
                   <button
-                    className={styles.humanButton}
                     onClick={() => handleGuess("Human")}
+                    style={{
+                      padding: "10px",
+                      margin: "5px",
+                      borderRadius: "5px",
+                      backgroundColor: "#ff6f61",
+                      color: "white",
+                      border: "none",
+                    }}
                   >
                     Human
                   </button>
                 </>
               ) : (
                 <>
-                  <p>{guessResult}</p>
-                  <button className={styles.newChatButton} onClick={restartChat}>
+                  <p style={{ marginTop: "10px", fontWeight: "bold" }}>
+                    {guessResult}
+                  </p>
+                  <button
+                    onClick={restartChat}
+                    style={{
+                      marginTop: "10px",
+                      padding: "10px",
+                      borderRadius: "5px",
+                      backgroundColor: "#128c7e",
+                      color: "white",
+                      border: "none",
+                    }}
+                  >
                     Start a New Chat
                   </button>
                 </>
               )}
             </div>
-          )}
+          ) : null}
         </>
       )}
     </div>
