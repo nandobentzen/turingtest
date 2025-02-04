@@ -12,7 +12,6 @@ export default function Chat() {
   const [room, setRoom] = useState(null);
   const [searching, setSearching] = useState(false);
   const [partnerType, setPartnerType] = useState(null);
-  const [showGuessOptions, setShowGuessOptions] = useState(false);
   const [guessResult, setGuessResult] = useState(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [score, setScore] = useState(0);
@@ -46,7 +45,6 @@ export default function Chat() {
 
     socketRef.current.on("gameOver", () => {
       setGameOver(true);
-      setShowGuessOptions(true);
     });
 
     return () => {
@@ -96,7 +94,6 @@ export default function Chat() {
     setGameOver(false);
     setRoom(null);
     setPartnerType(null);
-    setShowGuessOptions(false);
     setGuessResult(null);
     setMessages([]);
     socketRef.current.emit("startChat");

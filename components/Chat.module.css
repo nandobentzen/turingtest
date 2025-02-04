@@ -10,13 +10,12 @@
   font-family: Arial, sans-serif;
 }
 
-/* Keyframes for spinner */
+/* Spinner keyframes and style */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Spinner style */
 .spinner {
   margin: 20px auto;
   width: 50px;
@@ -27,7 +26,7 @@
   animation: spin 1s linear infinite;
 }
 
-/* Start Screen */
+/* Start screen styles */
 .startScreen {
   text-align: center;
   padding: 50px;
@@ -53,14 +52,14 @@
   cursor: pointer;
 }
 
-/* Searching Screen */
+/* Searching screen styles */
 .searchingScreen {
   text-align: center;
   font-size: 18px;
   padding: 20px;
 }
 
-/* Score */
+/* Score display */
 .score {
   text-align: center;
   margin-bottom: 10px;
@@ -68,7 +67,7 @@
   font-weight: bold;
 }
 
-/* Chat Box */
+/* Chat box styling */
 .chatBox {
   height: 400px;
   overflow-y: auto;
@@ -81,7 +80,7 @@
   justify-content: flex-end;
 }
 
-/* Message Styles */
+/* Message styles */
 .message {
   max-width: 70%;
   padding: 10px;
@@ -92,24 +91,24 @@
   text-align: left;
 }
 
-.message.you {
+.you {
   align-self: flex-end;
   background-color: #dcf8c6;
 }
 
-.message.guest {
+.guest {
   align-self: flex-start;
   background-color: #fff;
 }
 
-/* Timer */
+/* Timer text */
 .timer {
   text-align: center;
   color: #128c7e;
   margin-top: 10px;
 }
 
-/* Input Container */
+/* Input container styles */
 .inputContainer {
   display: flex;
   gap: 10px;
@@ -131,7 +130,7 @@
   border: none;
 }
 
-/* Guess Container */
+/* Guess container styles */
 .guessContainer {
   text-align: center;
   margin-top: 10px;
