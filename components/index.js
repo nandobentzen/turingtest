@@ -10,7 +10,6 @@ export default function Chat() {
   const [gameOver, setGameOver] = useState(false);
   const [room, setRoom] = useState(null);
   const [searching, setSearching] = useState(false);
-  const [userId, setUserId] = useState(null);
   const [partnerType, setPartnerType] = useState(null);
   const [showGuessOptions, setShowGuessOptions] = useState(false);
   const [guessResult, setGuessResult] = useState(null);
@@ -25,7 +24,6 @@ export default function Chat() {
     socketRef.current = io("https://turinggame-026947442f58.herokuapp.com/");
 
     socketRef.current.on("connect", () => {
-      setUserId(socketRef.current.id);
       console.log("Connected userId:", socketRef.current.id);
     });
 
