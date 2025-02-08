@@ -15,9 +15,37 @@ export default function Chat() {
   const [guessResult, setGuessResult] = useState(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [score, setScore] = useState(0);
+
+  // --- FAKE ONLINE PLAYERS STATE ---
+  const [onlinePlayers, setOnlinePlayers] = useState(() => {
+    // Start with random number between 49 and 89
+    return Math.floor(Math.random() * (89 - 49 + 1)) + 49;
+  });
+
   const chatBoxRef = useRef(null);
   const dummyRef = useRef(null);
   const socketRef = useRef(null);
+
+  useEffect(() => {
+    // INTERVAL: Update the fake onlinePlayers every few seconds
+    const interval = setInterval(() => {
+      setOnlinePlayers((prev) => {
+        // Randomly go up or down by 1
+        const change = Math.random() < 0.5 ? -1 : 1;
+        let newVal = prev + change;
+
+        // Clamp between 49 and 89
+        if (newVal < 49) newVal = 49;
+        if (newVal > 89) newVal = 89;
+
+        return newVal;
+      });
+    }, 3000); // every 3 seconds
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     // Connect to your Heroku server URL.
@@ -27,6 +55,7 @@ export default function Chat() {
       console.log("Connected userId:", socketRef.current.id);
     });
 
+    // When matched, we get the room and partnerType
     socketRef.current.on("matched", ({ room, partnerType }) => {
       setRoom(room);
       setPartnerType(partnerType);
@@ -34,19 +63,23 @@ export default function Chat() {
       setMessages([]);
     });
 
+    // When a message arrives, figure out if it's "You" or "Guest"
     socketRef.current.on("message", (message) => {
       const sender = message.user === socketRef.current.id ? "You" : "Guest";
       setMessages((prev) => [...prev, { user: sender, text: message.text }]);
     });
 
+    // Timer
     socketRef.current.on("timer", (timeLeft) => {
       setTimer(timeLeft);
     });
 
+    // Game Over
     socketRef.current.on("gameOver", () => {
       setGameOver(true);
     });
 
+    // Cleanup on unmount
     return () => {
       socketRef.current.off("matched");
       socketRef.current.off("message");
@@ -56,18 +89,21 @@ export default function Chat() {
     };
   }, []);
 
+  // Auto-scroll to bottom whenever messages change
   useEffect(() => {
     if (dummyRef.current) {
       dummyRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
+  // Start chatting => request a match from server
   const startChat = () => {
     setHasStarted(true);
     setSearching(true);
     socketRef.current.emit("startChat");
   };
 
+  // Send typed message to server
   const sendMessage = () => {
     if (input.trim() !== "" && room) {
       socketRef.current.emit("message", { room, text: input });
@@ -75,8 +111,10 @@ export default function Chat() {
     }
   };
 
+  // User guesses "AI" or "Human"
   const handleGuess = (guess) => {
-    if (guessResult) return;
+    if (guessResult) return; // Already guessed
+
     if (
       (guess === "AI" && partnerType === "ai") ||
       (guess === "Human" && partnerType === "human")
@@ -89,6 +127,7 @@ export default function Chat() {
     }
   };
 
+  // Restart => search for a new match
   const restartChat = () => {
     setSearching(true);
     setGameOver(false);
@@ -100,9 +139,11 @@ export default function Chat() {
   };
 
   return (
-    // Wrap the entire chat UI with a full-page background
     <div className={styles.pageBackground}>
       <div className={styles.chatContainer}>
+
+  
+
         {!hasStarted ? (
           <div className={styles.startScreen}>
             <h2>PlayTuring.com</h2>
@@ -174,7 +215,10 @@ export default function Chat() {
                 ) : (
                   <>
                     <p>{guessResult}</p>
-                    <button className={styles.newChatButton} onClick={restartChat}>
+                    <button
+                      className={styles.newChatButton}
+                      onClick={restartChat}
+                    >
                       Start a New Chat
                     </button>
                   </>
@@ -183,6 +227,10 @@ export default function Chat() {
             )}
           </>
         )}
+      {/* Show the fake 'Online Players' at top */}
+        <p style={{ textAlign: "center", color: "#333", marginBottom: "10px" }}>
+          Online Players: {onlinePlayers}
+        </p>
       </div>
     </div>
   );
