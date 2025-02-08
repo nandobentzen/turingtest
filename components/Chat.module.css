@@ -13,7 +13,7 @@
 
 /* Container for the chat */
 .chatContainer {
-  max-width: 400px;
+  width: 400px;
   margin: auto;
   background-color: #e5ddd5;
   border-radius: 10px;
@@ -87,9 +87,9 @@
   padding: 10px;
   background-color: #fff;
   border-radius: 5px;
+  /* Switch to column-reverse */
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  flex-direction: column-reverse;
 }
 
 /* Message styles */
