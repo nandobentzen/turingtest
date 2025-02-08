@@ -87,9 +87,9 @@
   padding: 10px;
   background-color: #fff;
   border-radius: 5px;
-  /* Switch to column-reverse */
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 /* Message styles */
