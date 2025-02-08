@@ -2,8 +2,9 @@
 
 /* FULL-PAGE BACKGROUND */
 .pageBackground {
-  background: url('/images/bg.jpg') no-repeat center center;
-  background-size: cover;
+  background: url("./wzbg.jpg") repeat center center;
+  /* Remove or change background-size */
+  /* background-size: cover; */
   min-height: 100vh;
   display: flex;
   justify-content: center;
