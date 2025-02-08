@@ -16,7 +16,7 @@ export default function Chat() {
   const [hasStarted, setHasStarted] = useState(false);
   const [score, setScore] = useState(0);
   const chatBoxRef = useRef(null);
-
+  const dummyRef = useRef(null);
   const socketRef = useRef(null);
 
   useEffect(() => {
