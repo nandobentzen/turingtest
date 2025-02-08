@@ -103,7 +103,7 @@ export default function Chat() {
     <div className={styles.chatContainer}>
       {!hasStarted ? (
         <div className={styles.startScreen}>
-	<h2>PlayTuring.com</h2><br>
+	<h2>PlayTuring.com</h2>
           <h1>CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?</h1>
           <p>
             Chat for 60 seconds and then guess if your partner is a real person or a cleverly disguised AI.
@@ -119,7 +119,8 @@ export default function Chat() {
         </div>
       ) : (
         <>
-          <div className={styles.score}>Score: {score}</div>
+          <div className={styles.score}>Your score: {score}</div>
+		<small>A wrong guess resets your score.</small>
 
           <div className={styles.chatBox} ref={chatBoxRef}>
             {messages.map((msg, index) => (
