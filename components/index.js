@@ -100,79 +100,90 @@ export default function Chat() {
   };
 
   return (
-    <div className={styles.chatContainer}>
-      {!hasStarted ? (
-        <div className={styles.startScreen}>
-	<h2>PlayTuring.com</h2>
-          <h1>CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?</h1>
-          <p>
-            Chat for 60 seconds and then guess if your partner is a real person or a cleverly disguised AI.
-          </p>
-          <button className={styles.startButton} onClick={startChat}>
-            START CHATTING
-          </button>
-        </div>
-      ) : searching ? (
-        <div className={styles.searchingScreen}>
-          <div className={styles.spinner}></div>
-          <p>Searching for a match...</p>
-        </div>
-      ) : (
-        <>
-          <div className={styles.score}>Your score: {score}</div>
-		<small>A wrong guess resets your score.</small>
-
-          <div className={styles.chatBox} ref={chatBoxRef}>
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`${styles.message} ${
-                  msg.user === "You" ? styles.you : styles.guest
-                }`}
-              >
-                <strong>{msg.user}:</strong> {msg.text}
-              </div>
-            ))}
-            <div ref={dummyRef}></div>
+    // Wrap the entire chat UI with a full-page background
+    <div className={styles.pageBackground}>
+      <div className={styles.chatContainer}>
+        {!hasStarted ? (
+          <div className={styles.startScreen}>
+            <h2>PlayTuring.com</h2>
+            <h1>CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?</h1>
+            <p>
+              Chat for 60 seconds and then guess if your partner is a real person or a cleverly disguised AI.
+            </p>
+            <button className={styles.startButton} onClick={startChat}>
+              START CHATTING
+            </button>
           </div>
+        ) : searching ? (
+          <div className={styles.searchingScreen}>
+            <div className={styles.spinner}></div>
+            <p>Searching for a match...</p>
+          </div>
+        ) : (
+          <>
+            <div className={styles.score}>Your score: {score}</div>
 
-          <p className={styles.timer}>Time Left: {timer}s</p>
+            <div className={styles.chatBox} ref={chatBoxRef}>
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`${styles.message} ${
+                    msg.user === "You" ? styles.you : styles.guest
+                  }`}
+                >
+                  <strong>{msg.user}:</strong> {msg.text}
+                </div>
+              ))}
+              <div ref={dummyRef}></div>
+            </div>
 
-          {!gameOver ? (
-            <div className={styles.inputContainer}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                placeholder="Type your message..."
-              />
-              <button onClick={sendMessage}>Send</button>
-            </div>
-          ) : (
-            <div className={styles.guessContainer}>
-              <p>Who do you think your chat partner was?</p>
-              {!guessResult ? (
-                <>
-                  <button className={styles.aiButton} onClick={() => handleGuess("AI")}>
-                    AI
-                  </button>
-                  <button className={styles.humanButton} onClick={() => handleGuess("Human")}>
-                    Human
-                  </button>
-                </>
-              ) : (
-                <>
-                  <p>{guessResult}</p>
-                  <button className={styles.newChatButton} onClick={restartChat}>
-                    Start a New Chat
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-        </>
-      )}
+            <p className={styles.timer}>Time Left: {timer}s</p>
+
+            {!gameOver ? (
+              <div className={styles.inputContainer}>
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  placeholder="Type your message..."
+                />
+                <button onClick={sendMessage}>Send</button>
+              </div>
+            ) : (
+              <div className={styles.guessContainer}>
+                <b>Who do you think your chat partner was?</b>
+                <small style={{ display: "block", margin: "5px 0 7px" }}>
+                  A wrong guess resets your score.
+                </small>
+                {!guessResult ? (
+                  <>
+                    <button
+                      className={styles.aiButton}
+                      onClick={() => handleGuess("AI")}
+                    >
+                      AI
+                    </button>
+                    <button
+                      className={styles.humanButton}
+                      onClick={() => handleGuess("Human")}
+                    >
+                      Human
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p>{guessResult}</p>
+                    <button className={styles.newChatButton} onClick={restartChat}>
+                      Start a New Chat
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
