@@ -161,7 +161,7 @@ export default function Chat() {
               or a cleverly disguised AI.
             </p>
             <button className={styles.startButton} onClick={startChat}>
-              Start chatting...
+              START CHATTING
             </button>
           </div>
         ) : searching ? (
@@ -189,7 +189,7 @@ export default function Chat() {
 
               {/* If no messages, show prompt */}
               {messages.length === 0 && (
-                <p className={styles.startChatPrompt}>START CHATTING</p>
+                <p className={styles.startChatPrompt}>Start chatting...</p>
               )}
             </div>
 
