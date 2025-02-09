@@ -22,6 +22,13 @@
   font-family: Arial, sans-serif;
 }
 
+.startChatPrompt {
+  text-align: center;
+  margin: 10px 0 0 0; /* 10px margin at top, 0 on sides and bottom */
+  color: #888;        /* A neutral grey color */
+}
+
+
 /* Spinner keyframes and style */
 @keyframes spin {
   0% { transform: rotate(0deg); }
