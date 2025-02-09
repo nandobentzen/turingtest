@@ -244,7 +244,7 @@ export default function Chat() {
         )}
       </div>
       {/* 3) Display the fake 'Online Players: X' somewhere */}
-        <p style={{ textAlign: "center", color: "#333" }}>
+        <p style={{ textAlign: "center", color: "#333", background: "#FFF", padding: "5px 20px", borderRadius: "45px", margin: "10px" }}>
           Players Online: {onlinePlayers}
         </p>
     </div>
