@@ -25,8 +25,8 @@ export default function Chat() {
 
   // 2) Load the "key.mp3" audio when component mounts
   useEffect(() => {
-    typingSoundRef.current = new Audio("./key.mp3");
-    typingSoundRef.current.volume = 0.5; // optional, adjust volume
+    typingSoundRef.current = new Audio("/key.mp3");
+    typingSoundRef.current.volume = 0.9; // optional, adjust volume
   }, []);
 
   useEffect(() => {
