@@ -15,12 +15,21 @@ export default function Chat() {
   const [guessResult, setGuessResult] = useState(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [score, setScore] = useState(0);
+
   const chatBoxRef = useRef(null);
   const dummyRef = useRef(null);
   const socketRef = useRef(null);
 
+  // 1) Reference to your typing sound file
+  const typingSoundRef = useRef(null);
+
+  // 2) Load the "key.mp3" audio when component mounts
   useEffect(() => {
-    // Connect to your Heroku server URL.
+    typingSoundRef.current = new Audio("./key.mp3");
+    typingSoundRef.current.volume = 0.5; // optional, adjust volume
+  }, []);
+
+  useEffect(() => {
     socketRef.current = io("https://turinggame-026947442f58.herokuapp.com/");
 
     socketRef.current.on("connect", () => {
@@ -62,6 +71,22 @@ export default function Chat() {
     }
   }, [messages]);
 
+  // 3) Handle pressing Enter to send message, and play typing sounds for character keys
+  const handleKeyDown = (e) => {
+    // If user presses a single character key, play the sound
+    if (typingSoundRef.current && e.key.length === 1) {
+      typingSoundRef.current.currentTime = 0; // restart sound
+      typingSoundRef.current.play().catch((err) => {
+        // Just ignore if audio can't play (e.g. user not interacted yet)
+        console.warn("Audio play error:", err);
+      });
+    }
+    // If user presses Enter, send the message
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  };
+
   const startChat = () => {
     setHasStarted(true);
     setSearching(true);
@@ -77,10 +102,7 @@ export default function Chat() {
 
   const handleGuess = (guess) => {
     if (guessResult) return;
-    if (
-      (guess === "AI" && partnerType === "ai") ||
-      (guess === "Human" && partnerType === "human")
-    ) {
+    if ((guess === "AI" && partnerType === "ai") || (guess === "Human" && partnerType === "human")) {
       setGuessResult("Correct! You got it right.");
       setScore((prev) => prev + 1);
     } else {
@@ -100,7 +122,6 @@ export default function Chat() {
   };
 
   return (
-    // Wrap the entire chat UI with a full-page background
     <div className={styles.pageBackground}>
       <div className={styles.chatContainer}>
         {!hasStarted ? (
@@ -108,7 +129,8 @@ export default function Chat() {
             <h2>PlayTuring.com</h2>
             <h1>CAN YOU GUESS WHO IS HUMAN AND WHO IS AI?</h1>
             <p>
-              Chat for 60 seconds and then guess if your partner is a real person or a cleverly disguised AI.
+              Chat for 60 seconds and then guess if your partner is a real person
+              or a cleverly disguised AI.
             </p>
             <button className={styles.startButton} onClick={startChat}>
               START CHATTING
@@ -121,6 +143,7 @@ export default function Chat() {
           </div>
         ) : (
           <>
+            <center>PlayTuring.com</center>
             <div className={styles.score}>Your score: {score}</div>
 
             <div className={styles.chatBox} ref={chatBoxRef}>
@@ -135,6 +158,11 @@ export default function Chat() {
                 </div>
               ))}
               <div ref={dummyRef}></div>
+
+              {/*  Show "START CHATTING" at bottom if no messages yet */}
+              {messages.length === 0 && (
+                <p className={styles.startChatPrompt}>START CHATTING</p>
+              )}
             </div>
 
             <p className={styles.timer}>Time Left: {timer}s</p>
@@ -145,7 +173,7 @@ export default function Chat() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  onKeyDown={handleKeyDown}  // 4) attach our typing-sound logic
                   placeholder="Type your message..."
                 />
                 <button onClick={sendMessage}>Send</button>
@@ -174,7 +202,10 @@ export default function Chat() {
                 ) : (
                   <>
                     <p>{guessResult}</p>
-                    <button className={styles.newChatButton} onClick={restartChat}>
+                    <button
+                      className={styles.newChatButton}
+                      onClick={restartChat}
+                    >
                       Start a New Chat
                     </button>
                   </>
